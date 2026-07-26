@@ -119,10 +119,12 @@ async def test_rss_add_reenables_disabled_duplicate(db_session):
 
     await db.add(RSSItem(url=rss_url, name="Test RSS"))
     item = await db.search_url(rss_url)
+    assert item is not None
     await db.disable(item.id)
 
     assert await db.add(RSSItem(url=rss_url, name="Test RSS")) is True
     item = await db.search_url(rss_url)
+    assert item is not None
     assert item.enabled is True
 
 

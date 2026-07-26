@@ -567,11 +567,11 @@ class BangumiDatabase:
         from module.models.torrent import Torrent
 
         await self.session.execute(
-            delete(Torrent).where(Torrent.bangumi_id.is_not(None))  # type: ignore[attr-defined]
+            delete(Torrent).where(Torrent.bangumi_id.is_not(None))  # type: ignore[union-attr]
         )
         await self.session.execute(
             update(Aria2Gid)
-            .where(Aria2Gid.bangumi_id.is_not(None))  # type: ignore[attr-defined]
+            .where(Aria2Gid.bangumi_id.is_not(None))  # type: ignore[union-attr]
             .values(bangumi_id=None)
         )
         await self.session.execute(delete(Bangumi))
