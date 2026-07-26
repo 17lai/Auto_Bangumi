@@ -112,6 +112,20 @@ async def test_rss_database(db_session):
     assert result.url == rss_url
 
 
+async def test_rss_add_reenables_disabled_duplicate(db_session):
+    """重新订阅已存在但被停用的 RSS（删除番剧后孤儿停用，#1095）应重新启用。"""
+    rss_url = "https://mikanani.me/RSS/Bangumi?bangumiId=4020&subgroupid=583"
+    db = RSSDatabase(db_session)
+
+    await db.add(RSSItem(url=rss_url, name="Test RSS"))
+    item = await db.search_url(rss_url)
+    await db.disable(item.id)
+
+    assert await db.add(RSSItem(url=rss_url, name="Test RSS")) is True
+    item = await db.search_url(rss_url)
+    assert item.enabled is True
+
+
 # ---------------------------------------------------------------------------
 # TorrentDatabase qb_hash methods
 # ---------------------------------------------------------------------------
